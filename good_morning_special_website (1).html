@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Good Morning, Special One</title>
+  <style>
+    :root{
+      /* Soft Romantic Morning Theme */
+      --bg1:#ffdde1;  /* soft morning pink */
+      --bg2:#ffe5ec;  /* blossom rose tint */
+      --bg3:#ffd6e8;  /* dreamy pastel pink */
+      --accent1:#ff6fae; /* love pink */
+      --accent2:#ff4f9a; /* deep romantic rose */
+      --glow:#ffb3d9;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0d1117;
+  background-image: radial-gradient(circle at top left, #161b22 0%, #0d1117 100%);
+  font-family: Arial, sans-serif;
+}
+
+    /* Soft floating sparkles */
+    body::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><circle cx="4" cy="4" r="4" fill="white" opacity="0.4"/></svg>');
+      background-size:40px 40px;
+      opacity:0.15;
+      animation: sparkle 6s infinite linear;
+    }
+
+    @keyframes sparkle{
+      from{ transform:translateY(0); }
+      to{ transform:translateY(-40px); }
+    }
+
+    .container{
+      text-align:center;
+      color:white;
+      animation:fadeIn 1.5s ease;
+      padding:48px 24px;
+      width:min(900px, 92%);
+    }
+
+    h1{
+      font-size:3.1rem;
+      margin:0;
+      color:white;
+      text-shadow:0 0 25px var(--glow);
+      animation:glow 3s ease-in-out infinite alternate;
+    }
+
+    p{
+      font-size:1.3rem;
+      margin-top:10px;
+      opacity:0;
+      animation:slideUp 1.6s forwards 0.7s;
+      color:#fffefa;
+    }
+
+    @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+    @keyframes slideUp{from{opacity:0; transform:translateY(25px);} to{opacity:1; transform:translateY(0);} }
+    @keyframes glow{ from{ text-shadow:0 0 12px white; } to{ text-shadow:0 0 22px var(--glow), 0 0 32px var(--accent1);} }
+
+    /* Buttons */
+    .gifts{
+      position:absolute;
+      bottom:35px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      justify-content:center;
+    }
+
+    .gift-btn{
+      padding:12px 22px;
+      border:none;
+      border-radius:30px;
+      background:linear-gradient(135deg, var(--accent1), var(--accent2));
+      color:white;
+      font-size:1.05rem;
+      cursor:pointer;
+      box-shadow:0 8px 20px rgba(0,0,0,0.18);
+      transition:0.2s ease;
+    }
+
+    .gift-btn:hover{
+      transform:translateY(-4px) scale(1.04);
+      box-shadow:0 10px 24px rgba(0,0,0,0.22);
+    }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      backdrop-filter:blur(6px);
+      display:none;
+      place-items:center;
+      z-index:60;
+    }
+
+    .modal{
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.25);
+      padding:26px;
+      border-radius:18px;
+      width:min(420px,90%);
+      color:white;
+      box-shadow:0 12px 35px rgba(0,0,0,0.4);
+      text-align:center;
+      animation:modalPop 0.45s ease;
+    }
+
+    @keyframes modalPop{from{transform:scale(0.75); opacity:0;} to{transform:scale(1); opacity:1;}}
+
+    .close-btn{
+      border:none;
+      background:rgba(255,255,255,0.25);
+      padding:10px 18px;
+      border-radius:12px;
+      color:white;
+      cursor:pointer;
+      margin-top:14px;
+      transition:0.2s;
+    }
+
+    .close-btn:hover{ background:rgba(255,255,255,0.4); }
+
+    @media(max-width:600px){
+      h1{ font-size:2.3rem; }
+      p{ font-size:1.1rem; }
+      .gift-btn{ width:46%; }
+    }
+</style>
+</head>
+<body>
+  <div class="container" role="main">
+    <h1>Good Morning, My Special Person ☀️</h1>
+    <p>May your day be as bright, beautiful, and amazing as you are. 💖</p>
+  </div>
+
+  <!-- Buttons -->
+  <div class="gifts" aria-label="gifts for her">
+    <button class="gift-btn" id="btnTea" aria-haspopup="dialog">☕ Click for Tea</button>
+    <button class="gift-btn" id="btnBrush" aria-haspopup="dialog">🪥 Click for Brush</button>
+    <button class="gift-btn" id="btnLove" aria-haspopup="dialog">💝 Special Message</button>
+  </div>
+
+  <!-- Modal backdrop (hidden by default) -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" id="modalContent">
+      <h3 id="modalTitle">Title</h3>
+      <p id="modalBody">Message</p>
+      <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:12px">
+        <button class="close-btn" id="modalClose">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Floating hearts removed as requested
+
+    // --- Modal logic ---
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalClose = document.getElementById('modalClose');
+
+    function openModal(title, body){
+      modalTitle.textContent = title;
+      modalBody.textContent = body;
+      modalBackdrop.style.display = 'grid';
+      modalBackdrop.setAttribute('aria-hidden', 'false');
+    }
+    function closeModal(){
+      modalBackdrop.style.display = 'none';
+      modalBackdrop.setAttribute('aria-hidden', 'true');
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', function(e){ if(e.target === modalBackdrop) closeModal(); });
+
+    // --- Gift actions: attach event listeners (fixes previous error where onclick had extra parentheses) ---
+    document.getElementById('btnTea').addEventListener('click', function(){
+      openModal('A Warm Cup for You ☕', 'Good morning! Aapke liye garma-garam chai ❤️');
+    });
+
+    document.getElementById('btnBrush').addEventListener('click', function(){
+      openModal('Brush Time 🪥', 'Jaldi jaldi brush karlo madam! Aaj ka din bohot sweet hoga 😄');
+    });
+
+    document.getElementById('btnLove').addEventListener('click', function(){
+      openModal('Special Message', '💖 Love You Madam ❤️\nAap bahut special ho!');
+    });
+
+    // Keyboard: close modal on Esc
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+
+  </script>
+</body>
+</html>
